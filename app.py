@@ -2,18 +2,17 @@ from yahoo_fin import stock_info
 import json
 from langchain_experimental.llms.ollama_functions import OllamaFunctions
 from langchain_core.runnables import RunnableLambda
-from langchain_core.messages import HumanMessage
 from datetime import datetime
 
 model=OllamaFunctions(model="l3custom", format="json")
 
 def get_stock_price(stock_ticker: str) -> float:
     current_price = stock_info.get_live_price(stock_ticker)
-    return current_price
+    print("The current price is ", "$", round(current_price, 2))
 
 def create_meeting(attendee, time):
-    time = datetime.strptime(kwargs['time'], "%Y-%m-%dT%H:%M:%S")
-    print(f"Scheduled a meeting with {attendee} at {time}")
+    time = datetime.strptime(time, "%Y-%m-%dT%H:%M:%S")
+    print(f"Scheduled a meeting with {attendee} on {time}")
 
 
 tools = [
@@ -102,30 +101,32 @@ functions = {
 }
 
 
-result = model.invoke("What is the current stock price of Apple (AAPL)?")
-if result:
-    runnable = RunnableLambda(get_stock_price)
+def invoke_and_run(model, invoke_arg):
+    result = model.invoke(invoke_arg)
+    if result:
+        function_call = result.additional_kwargs['function_call']
+        print(function_call)
+        function_name = function_call['name']
+        arguments = json.loads(function_call['arguments'])
+        function = functions[function_name]
+        if function_name == 'get_stock_price':
+            runnable = RunnableLambda(function)
+            stock_ticker = arguments['stock_ticker']
+            if isinstance(stock_ticker, str):
+                runnable.invoke(stock_ticker)
+            else:
+                runnable.map().invoke(stock_ticker)
+        else:
+            if 'time' in arguments:
+                if isinstance(arguments['time'], dict):
+                    try:
+                        arguments['time'] = arguments['time']['time']
+                    except KeyError:
+                        raise ValueError("The 'time' dictionary does not have a key named 'time'")
+                elif not isinstance(arguments['time'], str):
+                    raise ValueError("The 'time' value must be a string")
+            function(**arguments)
 
-    function_call = result.additional_kwargs['function_call']
-
-    arguments = json.loads(function_call['arguments'])
-
-    stock_ticker = arguments['stock_ticker']
-
-    if isinstance(stock_ticker, str):
-        price = runnable.invoke(stock_ticker)
-        print("The current price is ", "$", round(price, 2))   
-    else:
-        price = runnable.map().invoke(stock_ticker)
-        print("The current price is ", "$", round(price, 2))    
-
-price = HumanMessage(content=price)   
-
-
-kwargs = model.invoke("Schedule a meeting with John at 3:00PM tomorrow")
-function_call = kwargs.additional_kwargs['function_call']
-function_name = kwargs.additional_kwargs['function_call']['name']
-kwargs = json.loads(kwargs.additional_kwargs['function_call']['arguments'])
-
-function = functions[function_name]
-function(**kwargs)
+# Usage:
+invoke_and_run(model, "What is the current stock price of Apple (AAPL)?")
+invoke_and_run(model, f"Today is {datetime.now()}. Schedule a meeting with John at 3:00PM tomorrow")
