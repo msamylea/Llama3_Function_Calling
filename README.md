@@ -10,7 +10,7 @@ The LangChain documentation on OllamaFunctions is pretty unclear and missing som
   - In my code, this results in : {'name': 'get_stock_price', 'arguments': '{"stock_ticker": "AAPL"}'}
 - From there, I load that into an arguments variable with json.loads(function_call[arguments]) to extract the actual arguments
 - Then I use my functions mapping to determine which function is which (can be used if your name is different than function_name).
-- If your function has addition arguments (for example, mine has stock_ticker: aapl), you can assign that and pass it in through creating a RunnableLambda that you invoke with the additional argument via .map().  If not, you can call it directly (as I do with the meeting scheduler with function(**arguments).
+- Code shows both direct function invocation and also use of a RunnableLambda in case you need to async
 
 - Note: The model "l3custom" is just llama3:latest via Ollama with a Modelfile that ends with PARAMETER stop Human: PARAMETER stop Assistant:
 
