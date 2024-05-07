@@ -14,45 +14,6 @@ def create_meeting(attendee, time):
     time = datetime.strptime(time, "%Y-%m-%dT%H:%M:%S")
     print(f"Scheduled a meeting with {attendee} on {time}")
 
-
-tools = [
-        { 
-            "name": "get_stock_price",
-            "description": "Get the current price of the given stock",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "stock_ticker": {
-                        "type": "string",
-                        "description": "The stock ticker to pass into the function"
-                    }
-                },
-                "required": ["stock_ticker"]
-            }
-        },
-        {
-            "name": "create_meeting",
-            "description": "Schedule a meeting for the user with the specified details",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "attendee": {
-                        "type": "string",
-                        "description": "The person to schedule the meeting with"
-                    },
-                    "time": {
-                        "type": "datetime",
-                        "description": "The date and time of the meeting"
-                    }
-                },
-                "required": [
-                    "attendee",
-                    "time"
-                ]
-            },
-        },
-    ],
-
 model = model.bind_tools(
     tools = [
         { 
@@ -94,7 +55,6 @@ model = model.bind_tools(
 
 )
 
-
 functions = {
     "get_stock_price": get_stock_price,
     "create_meeting": create_meeting,
@@ -127,6 +87,5 @@ def invoke_and_run(model, invoke_arg):
                     raise ValueError("The 'time' value must be a string")
             function(**arguments)
 
-# Usage:
 invoke_and_run(model, "What is the current stock price of Apple (AAPL)?")
 invoke_and_run(model, f"Today is {datetime.now()}. Schedule a meeting with John at 3:00PM tomorrow")
