@@ -1,7 +1,7 @@
 # Llama3 Function Calling
 
 
-Demonstrates calling functionsusing Llama 3 with Ollama through utilization of LangChain OllamaFunctions.  The functions are basic, but the model does identify which function to call appropriately and returns the correct results.
+Demonstrates calling functions using Llama 3 with Ollama through utilization of LangChain OllamaFunctions.  The functions are basic, but the model does identify which function to call appropriately and returns the correct results.
 The LangChain documentation on OllamaFunctions is pretty unclear and missing some of the key elements needed to make it work.
 
 - After you use model.invoke, the return you get is not the final result.  It's JSON that contains the arguments you need for the next step (which is left out of LangChain documentation).
