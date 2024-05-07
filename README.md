@@ -1,4 +1,4 @@
-# Llama3 Function Callings
+# Llama3 Function Calling
 
 
 Demonstrates calling functionsusing Llama 3 with Ollama through utilization of LangChain OllamaFunctions.  The functions are basic, but the model does identify which function to call appropriately and returns the correct results.
