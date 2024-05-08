@@ -76,13 +76,16 @@ def invoke_and_run(model, invoke_arg):
                 runnable.invoke(stock_ticker)
             else:
                 runnable.map().invoke(stock_ticker)
-        else:
+         else:
             if 'time' in arguments:
                 if isinstance(arguments['time'], dict):
                     try:
-                        arguments['time'] = arguments['time']['time']
+                        if isinstance(arguments['time'], dict) and '$date' in arguments['time']:
+                            arguments['time'] = arguments['time']['$date']
+                        else:
+                            arguments['time'] = arguments['time']['time']
                     except KeyError:
-                        raise ValueError("The 'time' dictionary does not have a key named 'time'")
+                        raise ValueError("The 'time' dictionary does not have a key named 'time' or '$date'")
                 elif not isinstance(arguments['time'], str):
                     raise ValueError("The 'time' value must be a string")
             function(**arguments)
