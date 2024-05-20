@@ -1,5 +1,6 @@
 # Llama3 Function Calling
 
+## If you want to do this without Ollama or LangChain, I created one strictly using Pydantic here: https://github.com/msamylea/open_source_llm_tool_use
 
 Demonstrates calling functions using Llama 3 with Ollama through utilization of LangChain OllamaFunctions.  The functions are basic, but the model does identify which function to call appropriately and returns the correct results.
 The LangChain documentation on OllamaFunctions is pretty unclear and missing some of the key elements needed to make it work.
